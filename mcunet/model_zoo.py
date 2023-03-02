@@ -67,19 +67,19 @@ net_id_list = list(NET_INFO.keys())
 url_base = "https://hanlab.mit.edu/projects/tinyml/mcunet/release/"
 
 
-def build_model(net_id, pretrained=True):
+def build_model(net_id, pretrained=True, model_dir='~/.torch/mcunet'):
     assert net_id in NET_INFO, 'Invalid net_id! Select one from {})'.format(list(NET_INFO.keys()))
     net_info = NET_INFO[net_id]
 
     net_config_url = url_base + net_info['net_name'] + ".json"
     sd_url = url_base + net_info['net_name'] + ".pth"
 
-    net_config = json.load(open(download_url(net_config_url)))
+    net_config = json.load(open(download_url(net_config_url, model_dir=model_dir)))
     resolution = net_config['resolution']
     model = ProxylessNASNets.build_from_config(net_config)
 
     if pretrained:
-        sd = torch.load(download_url(sd_url), map_location='cpu')
+        sd = torch.load(download_url(sd_url, model_dir=model_dir), map_location='cpu')
         model.load_state_dict(sd['state_dict'])
     return model, resolution, net_info['description']
 
