@@ -101,6 +101,8 @@ def download_url(url, model_dir='~/.torch/mcunet', overwrite=False):
         cached_file = model_dir
         if not os.path.exists(cached_file) or overwrite:
             sys.stderr.write('Downloading: "{}" to {}\n'.format(url, cached_file))
+            import ssl
+            ssl._create_default_https_context = ssl._create_unverified_context
             urlretrieve(url, cached_file)
         return cached_file
     except Exception as e:
